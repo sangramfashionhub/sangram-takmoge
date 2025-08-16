@@ -1,0 +1,88 @@
+import React, { useState } from "react";
+
+export default function App() {
+  const [products, setProducts] = useState([]);
+  const [newProduct, setNewProduct] = useState({ name: "", price: "", image: null, sizes: [] });
+  const [selectedSizes, setSelectedSizes] = useState({});
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setNewProduct({ ...newProduct, image: reader.result });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const addProduct = () => {
+    if (newProduct.name && newProduct.price && newProduct.image) {
+      setProducts([...products, newProduct]);
+      setNewProduct({ name: "", price: "", image: null, sizes: [] });
+    } else {
+      alert("कृपया सर्व माहिती भरा!");
+    }
+  };
+
+  const handleSizeSelect = (productIndex, size) => {
+    setSelectedSizes({ ...selectedSizes, [productIndex]: size });
+  };
+
+  const buyProduct = (productIndex) => {
+    const size = selectedSizes[productIndex];
+    if (!size) {
+      alert("कृपया size निवडा!");
+      return;
+    }
+    alert(`✅ You bought ${products[productIndex].name} (Size: ${size}) for ₹${products[productIndex].price}. Payment: Cash on Delivery`);
+  };
+
+  return (
+    <div style={{ padding: 20, fontFamily: "sans-serif" }}>
+      <h1>🛍️ Sangram Fashion Hub</h1>
+
+      <div style={{ marginBottom: 20 }}>
+        <input
+          type="text"
+          placeholder="Product Name"
+          value={newProduct.name}
+          onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
+        />
+        <input
+          type="number"
+          placeholder="Price"
+          value={newProduct.price}
+          onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
+        />
+        <input type="file" accept="image/*" onChange={handleImageUpload} />
+        <input
+          type="text"
+          placeholder="Sizes (comma separated, e.g., S,M,L,XL)"
+          value={newProduct.sizes.join(",")}
+          onChange={(e) => setNewProduct({ ...newProduct, sizes: e.target.value.split(",") })}
+        />
+        <button onClick={addProduct}>Add Product</button>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
+        {products.map((p, i) => (
+          <div key={i} style={{ border: "1px solid #ccc", padding: 10, borderRadius: 10 }}>
+            <img src={p.image} alt={p.name} style={{ width: "100%", borderRadius: 10 }} />
+            <h3>{p.name}</h3>
+            <p>₹{p.price}</p>
+            <select onChange={(e) => handleSizeSelect(i, e.target.value)} defaultValue="">
+              <option value="" disabled>Select Size</option>
+              {p.sizes.map((size, idx) => (
+                <option key={idx} value={size}>{size}</option>
+              ))}
+            </select>
+            <button onClick={() => buyProduct(i)}>Buy Now</button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+
