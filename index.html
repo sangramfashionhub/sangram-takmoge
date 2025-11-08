@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Store</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1 class="title">🛒 Product Store</h1>
+  <a href="cart.html" class="cart-link">Go to Cart 🛍️</a>
+
+  <div class="product-container">
+    <div class="product-card">
+      <img src="product1.jpg" alt="Smart Watch" class="product-img">
+      <h3 class="product-name">Smart Watch</h3>
+      <p class="product-price" data-price="1999">₹1999</p>
+      <button class="add-cart">Add to Cart</button>
+    </div>
+
+    <div class="product-card">
+      <img src="product2.jpg" alt="Earbuds" class="product-img">
+      <h3 class="product-name">Wireless Earbuds</h3>
+      <p class="product-price" data-price="1299">₹1299</p>
+      <button class="add-cart">Add to Cart</button>
+    </div>
+
+    <div class="product-card">
+      <img src="product3.jpg" alt="Gaming Mouse" class="product-img">
+      <h3 class="product-name">Gaming Mouse</h3>
+      <p class="product-price" data-price="899">₹899</p>
+      <button class="add-cart">Add to Cart</button>
+    </div>
+  </div>
+
+  <script>
+    const buttons = document.querySelectorAll('.add-cart');
+    buttons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const product = e.target.parentElement;
+        const name = product.querySelector('.product-name').innerText;
+        const price = parseInt(product.querySelector('.product-price').dataset.price);
+        const img = product.querySelector('.product-img').src;
+
+        const item = { name, price, img };
+
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        cart.push(item);
+
+        localStorage.setItem('cart', JSON.stringify(cart));
+
+        alert('✅ Added to cart!');
+      });
+    });
+  </script>
+</body>
+</html>
+
